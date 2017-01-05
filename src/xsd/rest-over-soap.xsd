@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<schema xmlns="http://www.w3.org/2001/XMLSchema" xmlns:tns="http://g.rimsa.lt/rest-over-soap/" targetNamespace="http://g.rimsa.lt/rest-over-soap/">
+
+  <element name="request">
+    <complexType>
+      <simpleContent>
+        <extension base="string">
+          <attribute name="method" type="tns:HttpMethod" use="required" />
+          <attribute name="path" use="required">
+            <simpleType>
+              <restriction base="anyURI">
+                <minLength value="1" />
+              </restriction>
+            </simpleType>
+          </attribute>
+        </extension>
+      </simpleContent>
+    </complexType>
+  </element>
+
+  <simpleType name="HttpMethod">
+    <restriction base="string">
+      <enumeration value="GET" />
+      <enumeration value="POST" />
+      <enumeration value="PUT" />
+      <enumeration value="PATCH" />
+      <enumeration value="DELETE" />
+    </restriction>
+  </simpleType>
+
+</schema>
