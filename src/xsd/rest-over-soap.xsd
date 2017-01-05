@@ -18,6 +18,16 @@
     </complexType>
   </element>
 
+  <element name="response">
+    <complexType>
+      <simpleContent>
+        <extension base="string">
+          <attribute name="status" type="int" use="required" />
+        </extension>
+      </simpleContent>
+    </complexType>
+  </element>
+
   <simpleType name="HttpMethod">
     <restriction base="string">
       <enumeration value="GET" />
