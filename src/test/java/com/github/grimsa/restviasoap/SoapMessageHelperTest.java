@@ -11,18 +11,18 @@ import org.junit.Test;
 import com.github.grimsa.restviasoap.generated.HttpMethod;
 import com.github.grimsa.restviasoap.generated.Request;
 
-public class SoapEnvelopeHelperTest {
+public class SoapMessageHelperTest {
 
-    private SoapEnvelopeHelper soapEnvelopeHelper = new SoapEnvelopeHelper();
+    private SoapMessageHelper soapEnvelopeHelper = new SoapMessageHelper();
 
     @Test
-    public void shouldUnwrapRequestFromEnvelope() {
+    public void shouldUnwrapRestRequestFromSoapMessage() {
         // given
         StringBuilder sb = new StringBuilder();
         sb.append("<soapenv:Envelope xmlns:soapenv=\"http://schemas.xmlsoap.org/soap/envelope/\">");
         sb.append("  <soapenv:Header />");
         sb.append("  <soapenv:Body>");
-        sb.append("    <request xmlns=\"http://g.rimsa.lt/rest-over-soap/\" method=\"GET\" path=\"api/ačiū\">content</request>");
+        sb.append("    <request xmlns=\"http://g.rimsa.lt/rest-over-soap/\" method=\"POST\" path=\"/api/ačiū\">content</request>");
         sb.append("  </soapenv:Body>");
         sb.append("</soapenv:Envelope>");
         String example = sb.toString();
@@ -30,11 +30,11 @@ public class SoapEnvelopeHelperTest {
         InputStream is = new ByteArrayInputStream(example.getBytes(StandardCharsets.UTF_8));
 
         // when
-        Request rest = soapEnvelopeHelper.unwrap(is);
+        Request rest = soapEnvelopeHelper.readRequest(is);
 
         // then
-        assertEquals(HttpMethod.GET, rest.getMethod());
-        assertEquals("api/ačiū", rest.getPath().toString());
+        assertEquals(HttpMethod.POST, rest.getMethod());
+        assertEquals("/api/ačiū", rest.getPath().toString());
         assertEquals("content", rest.getValue());
     }
 }

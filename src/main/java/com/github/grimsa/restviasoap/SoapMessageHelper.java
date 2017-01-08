@@ -12,15 +12,15 @@ import javax.xml.soap.SOAPMessage;
 
 import com.github.grimsa.restviasoap.generated.Request;
 
-class SoapEnvelopeHelper {
+class SoapMessageHelper {
 
-    Request unwrap(InputStream soapEnvelopeInputStream) {
+    Request readRequest(InputStream soapMessageInputStream) {
         try {
-            SOAPMessage message = MessageFactory.newInstance().createMessage(null, soapEnvelopeInputStream);
+            SOAPMessage message = MessageFactory.newInstance().createMessage(null, soapMessageInputStream);
             Unmarshaller unmarshaller = JAXBContext.newInstance(Request.class).createUnmarshaller();
             return (Request) unmarshaller.unmarshal(message.getSOAPBody().extractContentAsDocument());
         } catch (JAXBException | SOAPException | IOException e) {
-            throw new RuntimeException("Failed to unwrap Request from SOAP envelope");
+            throw new RuntimeException("Failed to extract Request from SOAP message", e);
         }
     }
 }

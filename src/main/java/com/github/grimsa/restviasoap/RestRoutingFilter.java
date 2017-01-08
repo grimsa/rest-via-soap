@@ -13,7 +13,7 @@ import com.github.grimsa.restviasoap.generated.Request;
 
 public class RestRoutingFilter implements Filter {
 
-    private SoapEnvelopeHelper soapEnvelopeHelper = new SoapEnvelopeHelper();
+    private SoapMessageHelper soapEnvelopeHelper = new SoapMessageHelper();
 
     @Override
     public void init(FilterConfig filterConfig) throws ServletException {
@@ -21,7 +21,7 @@ public class RestRoutingFilter implements Filter {
 
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
-        Request restRequestSpecification = soapEnvelopeHelper.unwrap(request.getInputStream());
+        Request restRequestSpecification = soapEnvelopeHelper.readRequest(request.getInputStream());
 
         // TODO: build wrapped request
 
