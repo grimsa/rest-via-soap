@@ -43,14 +43,14 @@ public class QueryParameterExtractorTest {
     @Test
     public void shouldDecodeParameters() {
         // given
-        URI pathWithEncodedParams = URI.create("/url?param_with_symbols_%2B%2F%3Fin_middle_of_name=a%C4%8Di%C5%AB");
+        URI pathWithEncodedParams = URI.create("/url?param_with_symbols+%2B%2F%3Fin_middle_of_name=a%C4%8Di%C5%AB");
 
         // when
         Map<String, String[]> params = extractor.toQueryParameters(pathWithEncodedParams);
 
         // then
         assertEquals(1, params.size());
-        assertEquals(Collections.singleton("param_with_symbols_+/?in_middle_of_name"), params.keySet());
-        assertArrayEquals(new String[] { "ačiū" }, params.get("param_with_symbols_+/?in_middle_of_name"));
+        assertEquals(Collections.singleton("param_with_symbols +/?in_middle_of_name"), params.keySet());
+        assertArrayEquals(new String[] { "ačiū" }, params.get("param_with_symbols +/?in_middle_of_name"));
     }
 }

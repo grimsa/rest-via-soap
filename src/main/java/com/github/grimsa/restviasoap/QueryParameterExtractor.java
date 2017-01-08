@@ -1,6 +1,8 @@
 package com.github.grimsa.restviasoap;
 
+import java.io.UnsupportedEncodingException;
 import java.net.URI;
+import java.net.URLDecoder;
 import java.util.AbstractMap.SimpleImmutableEntry;
 import java.util.Arrays;
 import java.util.Collections;
@@ -13,7 +15,7 @@ import java.util.stream.Collectors;
 class QueryParameterExtractor {
 
     Map<String, String[]> toQueryParameters(URI requestUri) {
-        String query = requestUri.getQuery();
+        String query = requestUri.getRawQuery();
         if (query == null) {
             return Collections.emptyMap();
         }
@@ -32,6 +34,14 @@ class QueryParameterExtractor {
         int idx = it.indexOf('=');
         String key = idx > 0 ? it.substring(0, idx) : it;
         String value = idx > 0 && it.length() > idx + 1 ? it.substring(idx + 1) : null;
-        return new SimpleImmutableEntry<>(key, value);
+        return new SimpleImmutableEntry<>(decode(key), decode(value));
+    }
+
+    private String decode(String encoded) {
+        try {
+            return URLDecoder.decode(encoded, "UTF-8");
+        } catch (UnsupportedEncodingException e) {
+            throw new IllegalStateException(e);
+        }
     }
 }
