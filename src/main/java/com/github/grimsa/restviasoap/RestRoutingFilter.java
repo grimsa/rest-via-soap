@@ -8,6 +8,7 @@ import javax.servlet.FilterConfig;
 import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
+import javax.servlet.http.HttpServletRequest;
 
 import com.github.grimsa.restviasoap.generated.Request;
 
@@ -23,9 +24,9 @@ public class RestRoutingFilter implements Filter {
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
         Request restRequestSpecification = soapEnvelopeHelper.readRequest(request.getInputStream());
 
-        // TODO: build wrapped request
+        RoutedRestRequest routedRestRequest = new RoutedRestRequest((HttpServletRequest) request, restRequestSpecification);
 
-        request.getRequestDispatcher(restRequestSpecification.getPath().toASCIIString()).forward(request, response);
+        request.getRequestDispatcher(restRequestSpecification.getPath().getRawPath()).forward(routedRestRequest, response);
     }
 
     @Override
