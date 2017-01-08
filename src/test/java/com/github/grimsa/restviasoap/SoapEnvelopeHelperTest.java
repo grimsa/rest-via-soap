@@ -22,7 +22,7 @@ public class SoapEnvelopeHelperTest {
         sb.append("<soapenv:Envelope xmlns:soapenv=\"http://schemas.xmlsoap.org/soap/envelope/\">");
         sb.append("  <soapenv:Header />");
         sb.append("  <soapenv:Body>");
-        sb.append("    <request xmlns=\"http://g.rimsa.lt/rest-over-soap/\" method=\"GET\" path=\"x\">content</request>");
+        sb.append("    <request xmlns=\"http://g.rimsa.lt/rest-over-soap/\" method=\"GET\" path=\"api/ačiū\">content</request>");
         sb.append("  </soapenv:Body>");
         sb.append("</soapenv:Envelope>");
         String example = sb.toString();
@@ -34,7 +34,7 @@ public class SoapEnvelopeHelperTest {
 
         // then
         assertEquals(HttpMethod.GET, rest.getMethod());
-        assertEquals("x", rest.getPath());
+        assertEquals("api/ačiū", rest.getPath().toString());
         assertEquals("content", rest.getValue());
     }
 }
