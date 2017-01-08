@@ -25,7 +25,7 @@ public class RestRoutingFilter implements Filter {
 
         // TODO: build wrapped request
 
-        request.getRequestDispatcher(restRequestSpecification.getPath()).forward(request, response);
+        request.getRequestDispatcher(restRequestSpecification.getPath().toASCIIString()).forward(request, response);
     }
 
     @Override

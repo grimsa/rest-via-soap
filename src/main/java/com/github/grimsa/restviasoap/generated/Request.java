@@ -1,12 +1,15 @@
 
 package com.github.grimsa.restviasoap.generated;
 
+import java.net.URI;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlType;
 import javax.xml.bind.annotation.XmlValue;
+import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 
 /**
@@ -19,13 +22,7 @@ import javax.xml.bind.annotation.XmlValue;
  *   &lt;simpleContent&gt;
  *     &lt;extension base="&lt;http://www.w3.org/2001/XMLSchema&gt;string"&gt;
  *       &lt;attribute name="method" use="required" type="{http://g.rimsa.lt/rest-over-soap/}HttpMethod" /&gt;
- *       &lt;attribute name="path" use="required"&gt;
- *         &lt;simpleType&gt;
- *           &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyURI"&gt;
- *             &lt;minLength value="1"/&gt;
- *           &lt;/restriction&gt;
- *         &lt;/simpleType&gt;
- *       &lt;/attribute&gt;
+ *       &lt;attribute name="path" use="required" type="{http://www.w3.org/2001/XMLSchema}anyURI" /&gt;
  *     &lt;/extension&gt;
  *   &lt;/simpleContent&gt;
  * &lt;/complexType&gt;
@@ -45,7 +42,9 @@ public class Request {
     @XmlAttribute(name = "method", required = true)
     protected HttpMethod method;
     @XmlAttribute(name = "path", required = true)
-    protected String path;
+    @XmlJavaTypeAdapter(Adapter1 .class)
+    @XmlSchemaType(name = "anyURI")
+    protected URI path;
 
     /**
      * Gets the value of the value property.
@@ -103,7 +102,7 @@ public class Request {
      *     {@link String }
      *     
      */
-    public String getPath() {
+    public URI getPath() {
         return path;
     }
 
@@ -115,7 +114,7 @@ public class Request {
      *     {@link String }
      *     
      */
-    public void setPath(String value) {
+    public void setPath(URI value) {
         this.path = value;
     }
 

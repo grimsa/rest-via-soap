@@ -8,7 +8,6 @@ import java.nio.charset.StandardCharsets;
 
 import org.junit.Test;
 
-import com.github.grimsa.restviasoap.SoapEnvelopeHelper;
 import com.github.grimsa.restviasoap.generated.HttpMethod;
 import com.github.grimsa.restviasoap.generated.Request;
 
@@ -17,7 +16,7 @@ public class SoapEnvelopeHelperTest {
     private SoapEnvelopeHelper soapEnvelopeHelper = new SoapEnvelopeHelper();
 
     @Test
-    public void shouldUnwrap() {
+    public void shouldUnwrapRequestFromEnvelope() {
         // given
         StringBuilder sb = new StringBuilder();
         sb.append("<soapenv:Envelope xmlns:soapenv=\"http://schemas.xmlsoap.org/soap/envelope/\">");

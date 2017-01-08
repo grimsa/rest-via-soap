@@ -1,18 +1,21 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<schema xmlns="http://www.w3.org/2001/XMLSchema" xmlns:tns="http://g.rimsa.lt/rest-over-soap/" targetNamespace="http://g.rimsa.lt/rest-over-soap/">
+<schema xmlns="http://www.w3.org/2001/XMLSchema" xmlns:tns="http://g.rimsa.lt/rest-over-soap/" targetNamespace="http://g.rimsa.lt/rest-over-soap/" xmlns:jaxb="http://java.sun.com/xml/ns/jaxb"
+  jaxb:version="2.1">
+
+  <annotation> 
+    <appinfo>
+      <jaxb:globalBindings>
+         <jaxb:javaType name="java.net.URI" xmlType="anyURI" parseMethod="java.net.URI.create" printMethod="toASCIIString" />
+      </jaxb:globalBindings>
+    </appinfo>
+  </annotation>
 
   <element name="request">
     <complexType>
       <simpleContent>
         <extension base="string">
           <attribute name="method" type="tns:HttpMethod" use="required" />
-          <attribute name="path" use="required">
-            <simpleType>
-              <restriction base="anyURI">
-                <minLength value="1" />
-              </restriction>
-            </simpleType>
-          </attribute>
+          <attribute name="path" type="anyURI" use="required" />
         </extension>
       </simpleContent>
     </complexType>
