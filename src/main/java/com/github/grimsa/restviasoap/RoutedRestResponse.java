@@ -34,6 +34,7 @@ class RoutedRestResponse extends HttpServletResponseWrapper {
     }
 
     void transformResponse() throws IOException {
+    void transformResponse(SoapMessageHelper soapMessageHelper) throws IOException {
         if (getContentType().startsWith("application/json")) {
             // return JSON wrapped in SOAP
             Response response = new Response();
@@ -42,7 +43,7 @@ class RoutedRestResponse extends HttpServletResponseWrapper {
 
             setStatus(200);
             setContentType("application/xml;charset=UTF-8");
-            new SoapMessageHelper().writeResponse(response, super.getOutputStream());
+            soapMessageHelper.writeResponse(response, super.getOutputStream());
         } else {
             // return same output, no changes
             byte[] capturedOutput = outputStream.getCapturedBytes();

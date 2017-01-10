@@ -27,7 +27,7 @@ import com.github.grimsa.restviasoap.RoutedRestRequest.PayloadServletInputStream
 import com.github.grimsa.restviasoap.generated.HttpMethod;
 import com.github.grimsa.restviasoap.generated.Request;
 
-public class RoutedHttpServletRequestTest {
+public class RoutedRestRequestTest {
 
     @Test
     public void shouldOverrideRequestInfo() throws Exception {
