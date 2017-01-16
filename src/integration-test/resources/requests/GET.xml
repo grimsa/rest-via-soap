@@ -1,0 +1,6 @@
+<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/">
+  <soapenv:Header />
+  <soapenv:Body>
+    <request xmlns="http://g.rimsa.lt/rest-over-soap/" method="GET" path="/api/user/1234" />
+  </soapenv:Body>
+</soapenv:Envelope>

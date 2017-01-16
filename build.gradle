@@ -34,6 +34,7 @@ dependencies {
     integrationTestCompile 'org.eclipse.jetty:jetty-server:9.4.0.v20161208'
     integrationTestCompile 'org.eclipse.jetty:jetty-servlet:9.4.0.v20161208'
     integrationTestCompile 'io.rest-assured:rest-assured:3.0.1'
+    integrationTestCompile 'com.google.guava:guava:21.0'
     
     jaxb 'com.sun.xml.bind:jaxb-core:2.2.11'
     jaxb 'com.sun.xml.bind:jaxb-xjc:2.2.11'
