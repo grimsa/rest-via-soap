@@ -2,9 +2,27 @@ plugins {
     id 'com.github.jacobono.jaxb' version '1.3.5'
 }
 apply plugin: 'java'
+apply plugin: 'eclipse'
+apply plugin: 'maven-publish'
 
 repositories {
     jcenter()
+}
+
+sourceSets {
+    integrationTest {
+        java {
+            compileClasspath += main.output
+            runtimeClasspath += main.output
+            srcDir file('src/integration-test/java')
+        }
+        resources.srcDir file('src/integration-test/resources')
+    }
+}
+
+configurations {
+    integrationTestCompile.extendsFrom testCompile
+    integrationTestRuntime.extendsFrom testRuntime
 }
 
 dependencies {
@@ -12,6 +30,10 @@ dependencies {
 
     testCompile 'junit:junit:4.12'
     testCompile 'org.mockito:mockito-core:2.5.4'
+
+    integrationTestCompile 'org.eclipse.jetty:jetty-server:9.4.0.v20161208'
+    integrationTestCompile 'org.eclipse.jetty:jetty-servlet:9.4.0.v20161208'
+    integrationTestCompile 'io.rest-assured:rest-assured:3.0.1'
     
     jaxb 'com.sun.xml.bind:jaxb-core:2.2.11'
     jaxb 'com.sun.xml.bind:jaxb-xjc:2.2.11'
@@ -19,11 +41,30 @@ dependencies {
     jaxb 'javax.xml.bind:jaxb-api:2.2.12'
 }
 
+tasks.withType(JavaCompile) {
+    options.encoding = 'UTF-8'
+}
+
+task integrationTest(type: Test) {
+    testClassesDir = sourceSets.integrationTest.output.classesDir
+    classpath = sourceSets.integrationTest.runtimeClasspath
+    outputs.upToDateWhen { false }
+}
+check.dependsOn integrationTest
+integrationTest.mustRunAfter test
+
 jaxb {
     xsdDir = 'src/xsd'
     bindingsDir = 'src/xsd'
     xjc {
         header = false
         generatePackage = 'com.github.grimsa.restviasoap.generated'
+    }
+} 
+
+eclipse {
+    classpath {
+        plusConfigurations.add configurations.integrationTestCompile
+        plusConfigurations.add configurations.integrationTestRuntime
     }
 }
