@@ -35,23 +35,23 @@ public class RestRoutingFilter implements Filter {
         RoutedRestRequest routedRequest = new RoutedRestRequest((HttpServletRequest) request, restRequestSpecification);
         RoutedRestResponse routedResponse = new RoutedRestResponse((HttpServletResponse) response);
 
+        Response restResponse = null;
         try {
             request.getRequestDispatcher(restRequestSpecification.getPath().getRawPath()).forward(routedRequest, routedResponse);
+            restResponse = routedResponse.toResponse();
 
         } catch (ResponseWrappingException routingFilterException) {
             throw routingFilterException;
+
+        } catch (Exception applicationException) {
+            restResponse = new Response();
+            restResponse.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
         }
 
-        transformResponse(soapMessageHelper, routedResponse);
+        routedResponse.setStatus(200);
+        routedResponse.setContentType("application/xml;charset=UTF-8");
+        soapMessageHelper.writeResponse(restResponse, routedResponse.getResponseOutputStream());
         routedResponse.flushBuffer();
-    }
-
-    void transformResponse(SoapMessageHelper soapMessageHelper, RoutedRestResponse routedRestResponse) throws IOException {
-        Response response = routedRestResponse.toResponse();
-
-        routedRestResponse.setStatus(200);
-        routedRestResponse.setContentType("application/xml;charset=UTF-8");
-        soapMessageHelper.writeResponse(response, routedRestResponse.getResponseOutputStream());
     }
 
     @Override

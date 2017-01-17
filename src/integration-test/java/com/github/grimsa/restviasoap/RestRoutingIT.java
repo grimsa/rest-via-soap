@@ -133,6 +133,19 @@ public class RestRoutingIT {
         thenResponseIs(soapResponse, HttpStatus.NOT_FOUND_404, "");
     }
 
+    @Test
+    public void shouldHandleApplicationExceptions() throws IOException {
+        // given
+        String soapRequest = givenSoapRequest(HttpMethod.GET, TestServlet.PATH_REQUEST_THROWS_EXCEPTION, null);
+
+        // when
+        Response httpResponse = whenSoapMessageIsSent(soapRequest);
+
+        // then
+        String soapResponse = thenSoapResponseIsReceived(httpResponse);
+        thenResponseIs(soapResponse, HttpStatus.INTERNAL_SERVER_ERROR_500, "");
+    }
+
     private String givenSoapRequest(HttpMethod httpMethod, String path, String body) throws IOException {
         String template = Resources.toString(Resources.getResource("templates/request.xml"), StandardCharsets.UTF_8);
         return template.replace("${method}", httpMethod.name()).replace("${path}", path).replace("${body}", Optional.ofNullable(body).orElse(""));
