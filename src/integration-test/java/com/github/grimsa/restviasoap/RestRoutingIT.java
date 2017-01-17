@@ -26,10 +26,11 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 import com.github.grimsa.restviasoap.generated.HttpMethod;
-import com.github.grimsa.restviasoap.generated.Response;
 import com.google.common.io.Resources;
 
 import io.restassured.RestAssured;
+import io.restassured.http.ContentType;
+import io.restassured.response.Response;
 
 public class RestRoutingIT {
 
@@ -56,27 +57,54 @@ public class RestRoutingIT {
     }
 
     @Test
-    public void shouldWriteResponseToWriter() throws IOException {
+    public void shouldHandleOutputToWriter() throws IOException {
         // given
         String soapRequest = givenSoapRequest(HttpMethod.GET, TestServlet.PATH_REQUEST_WRITES_TO_WRITER, null);
 
         // when
-        String soapResponse = whenSoapMessageIsSent(soapRequest);
+        Response httpResponse = whenSoapMessageIsSent(soapRequest);
 
-        // response
+        // then
+        String soapResponse = thenSoapResponseIsReceived(httpResponse);
         thenResponseIs(soapResponse, HttpStatus.OK_200, TestServlet.RESPONSE_BODY);
     }
 
     @Test
-    public void shouldWriteResponseToStream() throws IOException {
+    public void shouldHandleOutputToStream() throws IOException {
         // given
         String soapRequest = givenSoapRequest(HttpMethod.GET, TestServlet.PATH_REQUEST_WRITES_TO_STREAM, null);
 
         // when
-        String soapResponse = whenSoapMessageIsSent(soapRequest);
+        Response httpResponse = whenSoapMessageIsSent(soapRequest);
 
-        // response
+        // then
+        String soapResponse = thenSoapResponseIsReceived(httpResponse);
         thenResponseIs(soapResponse, HttpStatus.OK_200, TestServlet.RESPONSE_BODY);
+    }
+
+    @Test
+    public void shouldHandleNoOutput() throws IOException {
+        // given
+        String soapRequest = givenSoapRequest(HttpMethod.POST, TestServlet.PATH_REQUEST_EMPTY_BODY, null);
+
+        // when
+        Response httpResponse = whenSoapMessageIsSent(soapRequest);
+
+        // then
+        String soapResponse = thenSoapResponseIsReceived(httpResponse);
+        thenResponseIs(soapResponse, HttpStatus.OK_200, "");
+    }
+
+    @Test
+    public void shouldHandleSendRedirect() throws IOException {
+        // given
+        String soapRequest = givenSoapRequest(HttpMethod.GET, TestServlet.PATH_REQUEST_SENDS_REDIRECT, null);
+
+        // when
+        Response httpResponse = whenSoapMessageIsSent(soapRequest);
+
+        // then
+        assertEquals(HttpStatus.INTERNAL_SERVER_ERROR_500, httpResponse.getStatusCode());
     }
 
     private String givenSoapRequest(HttpMethod httpMethod, String path, String body) throws IOException {
@@ -84,22 +112,28 @@ public class RestRoutingIT {
         return template.replace("${method}", httpMethod.name()).replace("${path}", path).replace("${body}", Optional.ofNullable(body).orElse(""));
     }
 
-    private String whenSoapMessageIsSent(String soapRequest) {
-        return given().request().contentType("application/soap+xml; charset=UTF-8;").body(soapRequest).post("/soap-api").andReturn().asString();
+    private Response whenSoapMessageIsSent(String soapRequest) {
+        return given().request().contentType("application/soap+xml; charset=UTF-8;").body(soapRequest).post("/soap-api");
+    }
+
+    private String thenSoapResponseIsReceived(Response response) {
+        String responseAsString = response.asString();
+        response.then().statusCode(200).contentType(ContentType.XML);
+        return responseAsString;
     }
 
     private void thenResponseIs(String soapResponse, int httpStatus, String body) {
-        Response restResponse = extractRestResponse(soapResponse);
+        com.github.grimsa.restviasoap.generated.Response restResponse = extractRestResponse(soapResponse);
         assertEquals(HttpStatus.OK_200, restResponse.getStatus());
         assertEquals(body, restResponse.getValue());
     }
 
-    private Response extractRestResponse(String soapResponse) {
+    private com.github.grimsa.restviasoap.generated.Response extractRestResponse(String soapResponse) {
         try {
             ByteArrayInputStream soapResponseIs = new ByteArrayInputStream(soapResponse.getBytes(StandardCharsets.UTF_8));
             SOAPMessage message = MessageFactory.newInstance().createMessage(null, soapResponseIs);
-            Unmarshaller unmarshaller = JAXBContext.newInstance(Response.class).createUnmarshaller();
-            return (Response) unmarshaller.unmarshal(message.getSOAPBody().extractContentAsDocument());
+            Unmarshaller unmarshaller = JAXBContext.newInstance(com.github.grimsa.restviasoap.generated.Response.class).createUnmarshaller();
+            return (com.github.grimsa.restviasoap.generated.Response) unmarshaller.unmarshal(message.getSOAPBody().extractContentAsDocument());
         } catch (JAXBException | SOAPException | IOException e) {
             throw new AssertionError("Failed to extract Response from SOAP message: " + soapResponse, e);
         }

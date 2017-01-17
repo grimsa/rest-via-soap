@@ -21,10 +21,12 @@ public class TestServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        switch(req.getRequestURI().substring(req.getContextPath().length())) {
+        String pathAfterContext = req.getRequestURI().substring(req.getContextPath().length());
+
+        switch (pathAfterContext) {
         case PATH_REQUEST_WRITES_TO_WRITER:
             resp.getWriter().print(RESPONSE_BODY);
-            resp.getWriter().close();
+            resp.getWriter().flush();
             break;
 
         case PATH_REQUEST_WRITES_TO_STREAM:
@@ -41,6 +43,20 @@ public class TestServlet extends HttpServlet {
 
         case PATH_REQUEST_SENDS_REDIRECT:
             resp.sendRedirect(PATH_REQUEST_WRITES_TO_STREAM);
+            break;
+
+        default:
+            throw new IllegalStateException("Something failed in application logic!");
+        }
+    }
+
+    @Override
+    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        String pathAfterContext = req.getRequestURI().substring(req.getContextPath().length());
+
+        switch (pathAfterContext) {
+        case PATH_REQUEST_EMPTY_BODY:
+            // return HTTP 200 with no output
             break;
 
         default:

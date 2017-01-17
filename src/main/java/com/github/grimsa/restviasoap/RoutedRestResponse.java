@@ -2,6 +2,7 @@ package com.github.grimsa.restviasoap;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.nio.charset.StandardCharsets;
 
@@ -33,22 +34,20 @@ class RoutedRestResponse extends HttpServletResponseWrapper {
         return outputStream;
     }
 
-    void transformResponse() throws IOException {
-    void transformResponse(SoapMessageHelper soapMessageHelper) throws IOException {
-        if (getContentType().startsWith("application/json")) {
-            // return JSON wrapped in SOAP
-            Response response = new Response();
-            response.setStatus(getStatus());
-            response.setValue(new String(outputStream.getCapturedBytes(), StandardCharsets.UTF_8));
+    OutputStream getResponseOutputStream() throws IOException {
+        return super.getOutputStream();
+    }
 
-            setStatus(200);
-            setContentType("application/xml;charset=UTF-8");
-            soapMessageHelper.writeResponse(response, super.getOutputStream());
-        } else {
-            // return same output, no changes
-            byte[] capturedOutput = outputStream.getCapturedBytes();
-            super.getOutputStream().write(capturedOutput);
-        }
+    @Override
+    public void sendRedirect(String location) throws IOException {
+        throw new ResponseWrappingException("Redirects are not supported. Requested redirect location: " + location);
+    }
+
+    Response toResponse() {
+        Response response = new Response();
+        response.setStatus(getStatus());
+        response.setValue(new String(outputStream.getCapturedBytes(), StandardCharsets.UTF_8));
+        return response;
     }
 
     private static class CapturingServletOutpuStream extends ServletOutputStream {
@@ -81,6 +80,14 @@ class RoutedRestResponse extends HttpServletResponseWrapper {
 
         private byte[] getCapturedBytes() {
             return capturedOutput.toByteArray();
+        }
+    }
+
+    static class ResponseWrappingException extends RuntimeException {
+        private static final long serialVersionUID = 1L;
+
+        public ResponseWrappingException(String string) {
+            super(string);
         }
     }
 }

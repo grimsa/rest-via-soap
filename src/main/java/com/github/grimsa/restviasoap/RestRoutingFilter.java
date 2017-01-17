@@ -11,7 +11,9 @@ import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.github.grimsa.restviasoap.RoutedRestResponse.ResponseWrappingException;
 import com.github.grimsa.restviasoap.generated.Request;
+import com.github.grimsa.restviasoap.generated.Response;
 
 public class RestRoutingFilter implements Filter {
 
@@ -30,12 +32,26 @@ public class RestRoutingFilter implements Filter {
 
         Request restRequestSpecification = soapMessageHelper.readRequest(request.getInputStream());
 
-        RoutedRestRequest routedRestRequest = new RoutedRestRequest((HttpServletRequest) request, restRequestSpecification);
-        RoutedRestResponse routedRestResponse = new RoutedRestResponse((HttpServletResponse) response);
+        RoutedRestRequest routedRequest = new RoutedRestRequest((HttpServletRequest) request, restRequestSpecification);
+        RoutedRestResponse routedResponse = new RoutedRestResponse((HttpServletResponse) response);
 
-        request.getRequestDispatcher(restRequestSpecification.getPath().getRawPath()).forward(routedRestRequest, routedRestResponse);
+        try {
+            request.getRequestDispatcher(restRequestSpecification.getPath().getRawPath()).forward(routedRequest, routedResponse);
 
-        routedRestResponse.transformResponse(soapMessageHelper);
+        } catch (ResponseWrappingException routingFilterException) {
+            throw routingFilterException;
+        }
+
+        transformResponse(soapMessageHelper, routedResponse);
+        routedResponse.flushBuffer();
+    }
+
+    void transformResponse(SoapMessageHelper soapMessageHelper, RoutedRestResponse routedRestResponse) throws IOException {
+        Response response = routedRestResponse.toResponse();
+
+        routedRestResponse.setStatus(200);
+        routedRestResponse.setContentType("application/xml;charset=UTF-8");
+        soapMessageHelper.writeResponse(response, routedRestResponse.getResponseOutputStream());
     }
 
     @Override
