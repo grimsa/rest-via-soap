@@ -107,6 +107,32 @@ public class RestRoutingIT {
         assertEquals(HttpStatus.INTERNAL_SERVER_ERROR_500, httpResponse.getStatusCode());
     }
 
+    @Test
+    public void shouldHandleSendError() throws IOException {
+        // given
+        String soapRequest = givenSoapRequest(HttpMethod.GET, TestServlet.PATH_REQUEST_SENDS_ERROR, null);
+
+        // when
+        Response httpResponse = whenSoapMessageIsSent(soapRequest);
+
+        // then
+        String soapResponse = thenSoapResponseIsReceived(httpResponse);
+        thenResponseIs(soapResponse, HttpStatus.NOT_FOUND_404, "");
+    }
+
+    @Test
+    public void shouldHandleSendErrorWithMessage() throws IOException {
+        // given
+        String soapRequest = givenSoapRequest(HttpMethod.GET, TestServlet.PATH_REQUEST_SENDS_ERROR_WITH_MESSAGE, null);
+
+        // when
+        Response httpResponse = whenSoapMessageIsSent(soapRequest);
+
+        // then
+        String soapResponse = thenSoapResponseIsReceived(httpResponse);
+        thenResponseIs(soapResponse, HttpStatus.NOT_FOUND_404, "");
+    }
+
     private String givenSoapRequest(HttpMethod httpMethod, String path, String body) throws IOException {
         String template = Resources.toString(Resources.getResource("templates/request.xml"), StandardCharsets.UTF_8);
         return template.replace("${method}", httpMethod.name()).replace("${path}", path).replace("${body}", Optional.ofNullable(body).orElse(""));
@@ -124,7 +150,7 @@ public class RestRoutingIT {
 
     private void thenResponseIs(String soapResponse, int httpStatus, String body) {
         com.github.grimsa.restviasoap.generated.Response restResponse = extractRestResponse(soapResponse);
-        assertEquals(HttpStatus.OK_200, restResponse.getStatus());
+        assertEquals(httpStatus, restResponse.getStatus());
         assertEquals(body, restResponse.getValue());
     }
 

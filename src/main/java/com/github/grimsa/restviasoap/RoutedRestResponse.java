@@ -43,6 +43,18 @@ class RoutedRestResponse extends HttpServletResponseWrapper {
         throw new ResponseWrappingException("Redirects are not supported. Requested redirect location: " + location);
     }
 
+    @Override
+    public void sendError(int sc) throws IOException {
+        resetBuffer();
+        setStatus(sc);
+    }
+
+    @Override
+    public void sendError(int sc, String msg) throws IOException {
+        resetBuffer();
+        setStatus(sc);
+    }
+
     Response toResponse() {
         Response response = new Response();
         response.setStatus(getStatus());
