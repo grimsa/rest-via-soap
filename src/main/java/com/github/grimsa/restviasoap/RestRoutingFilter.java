@@ -51,7 +51,6 @@ public class RestRoutingFilter implements Filter {
         routedResponse.setStatus(200);
         routedResponse.setContentType("application/xml;charset=UTF-8");
         soapMessageHelper.writeResponse(restResponse, routedResponse.getResponseOutputStream());
-        routedResponse.flushBuffer();
     }
 
     @Override
