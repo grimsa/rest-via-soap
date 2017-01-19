@@ -54,6 +54,18 @@ task integrationTest(type: Test) {
 check.dependsOn integrationTest
 integrationTest.mustRunAfter test
 
+publishing {
+    publications {
+        maven(MavenPublication) {
+            groupId 'com.github.grimsa'
+            artifactId 'rest-via-soap'
+            version '0.1'
+
+            from components.java
+        }
+    }
+}
+
 jaxb {
     xsdDir = 'src/xsd'
     bindingsDir = 'src/xsd'

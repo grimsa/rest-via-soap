@@ -10,6 +10,7 @@ import javax.servlet.http.HttpServletResponse;
 public class TestServlet extends HttpServlet {
     private static final long serialVersionUID = 1L;
 
+    static final String SERVLET_PATH = "/api/user/*";
     static final String PATH_REQUEST_WRITES_TO_WRITER = "/api/user/200/1";
     static final String PATH_REQUEST_WRITES_TO_STREAM = "/api/user/200/2";
     static final String PATH_REQUEST_EMPTY_BODY = "/api/user/200/3";

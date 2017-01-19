@@ -43,7 +43,7 @@ public class RestRoutingIT {
         ServletContextHandler handler = new ServletContextHandler(server, "/app", false, false);
 
         handler.addFilter(RestRoutingFilter.class, "/soap-api", EnumSet.of(DispatcherType.REQUEST));
-        handler.addServlet(TestServlet.class, "/api/user/*");
+        handler.addServlet(TestServlet.class, TestServlet.SERVLET_PATH);
 
         server.start();
         serverPort = ((ServerConnector) server.getConnectors()[0]).getLocalPort();
