@@ -15,12 +15,12 @@ import com.github.grimsa.restviasoap.generated.Response;
 
 class RoutedRestResponse extends HttpServletResponseWrapper {
 
-    private final CapturingServletOutpuStream outputStream;
+    private final CapturingServletOutputStream outputStream;
     private final PrintWriter writer;
 
     RoutedRestResponse(HttpServletResponse response) {
         super(response);
-        outputStream = new CapturingServletOutpuStream();
+        outputStream = new CapturingServletOutputStream();
         writer = new PrintWriter(outputStream, true);
     }
 
@@ -62,7 +62,7 @@ class RoutedRestResponse extends HttpServletResponseWrapper {
         return response;
     }
 
-    private static class CapturingServletOutpuStream extends ServletOutputStream {
+    private static class CapturingServletOutputStream extends ServletOutputStream {
         private final ByteArrayOutputStream capturedOutput = new ByteArrayOutputStream();
 
         @Override
