@@ -24,7 +24,7 @@ public class SoapMessageHelperTest {
         sb.append("<soapenv:Envelope xmlns:soapenv=\"http://schemas.xmlsoap.org/soap/envelope/\">");
         sb.append("  <soapenv:Header />");
         sb.append("  <soapenv:Body>");
-        sb.append("    <request xmlns=\"http://g.rimsa.lt/rest-over-soap/\" method=\"POST\" path=\"/api/ačiū\">content</request>");
+        sb.append("    <request xmlns=\"http://g.rimsa.lt/rest-via-soap/\" method=\"POST\" path=\"/api/ačiū\">content</request>");
         sb.append("  </soapenv:Body>");
         sb.append("</soapenv:Envelope>");
         String example = sb.toString();
@@ -50,7 +50,7 @@ public class SoapMessageHelperTest {
         sb.append("<SOAP-ENV:Envelope xmlns:SOAP-ENV=\"http://schemas.xmlsoap.org/soap/envelope/\">");
         sb.append("<SOAP-ENV:Header/>");
         sb.append("<SOAP-ENV:Body>");
-        sb.append("<response xmlns=\"http://g.rimsa.lt/rest-over-soap/\" status=\""+ responseStatus + "\">" + responseJson + "</response>");
+        sb.append("<response xmlns=\"http://g.rimsa.lt/rest-via-soap/\" status=\""+ responseStatus + "\">" + responseJson + "</response>");
         sb.append("</SOAP-ENV:Body>");
         sb.append("</SOAP-ENV:Envelope>");
         String expectedSoapMessage = sb.toString();

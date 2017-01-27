@@ -42,7 +42,7 @@ public class RestRoutingIT {
         server = new Server(0);
         ServletContextHandler handler = new ServletContextHandler(server, "/app", false, false);
 
-        handler.addFilter(RestRoutingFilter.class, "/soap-api", EnumSet.of(DispatcherType.REQUEST));
+        handler.addFilter(SoapProxyForRestApi.class, "/soap-api", EnumSet.of(DispatcherType.REQUEST));
         handler.addServlet(TestServlet.class, TestServlet.SERVLET_PATH);
 
         server.start();

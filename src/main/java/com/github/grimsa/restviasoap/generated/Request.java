@@ -21,7 +21,7 @@ import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
  * &lt;complexType&gt;
  *   &lt;simpleContent&gt;
  *     &lt;extension base="&lt;http://www.w3.org/2001/XMLSchema&gt;string"&gt;
- *       &lt;attribute name="method" use="required" type="{http://g.rimsa.lt/rest-over-soap/}HttpMethod" /&gt;
+ *       &lt;attribute name="method" use="required" type="{http://g.rimsa.lt/rest-via-soap/}HttpMethod" /&gt;
  *       &lt;attribute name="path" use="required" type="{http://www.w3.org/2001/XMLSchema}anyURI" /&gt;
  *     &lt;/extension&gt;
  *   &lt;/simpleContent&gt;

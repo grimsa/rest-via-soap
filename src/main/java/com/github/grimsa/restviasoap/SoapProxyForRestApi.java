@@ -15,7 +15,7 @@ import com.github.grimsa.restviasoap.RoutedRestResponse.ResponseWrappingExceptio
 import com.github.grimsa.restviasoap.generated.Request;
 import com.github.grimsa.restviasoap.generated.Response;
 
-public class RestRoutingFilter implements Filter {
+public class SoapProxyForRestApi implements Filter {
 
     private SoapMessageHelper soapMessageHelper = new SoapMessageHelper();
 

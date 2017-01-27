@@ -1,7 +1,7 @@
 <jaxb:bindings xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:jaxb="http://java.sun.com/xml/ns/jaxb" xmlns:xjc="http://java.sun.com/xml/ns/jaxb/xjc"
   jaxb:extensionBindingPrefixes="xjc" version="2.1">
 
-  <jaxb:bindings schemaLocation="rest-over-soap.xsd">
+  <jaxb:bindings schemaLocation="rest-via-soap.xsd">
     <jaxb:bindings node="//xs:simpleType[@name='HttpMethod']">
       <jaxb:typesafeEnumClass name="HttpMethod" />
     </jaxb:bindings>

@@ -9,7 +9,7 @@ And that something was either to build a SOAP implementation for each available 
 
 This project solves the problem described previously in a simple, generic and low-effort way.
 
-A Servlet Filter called `RestRoutingFilter` is provided that:
+A Servlet Filter called `SoapProxyForRestApi` is provided that:
 
 1. Accepts SOAP requests holding HTTP method, endpoint and payload for invoking REST service
 1. Invokes REST service as specified by the caller
@@ -17,22 +17,22 @@ A Servlet Filter called `RestRoutingFilter` is provided that:
 
 #### Example
 1. Assume we have a REST endpoint that can create Greeting instances. It is available at `/api/greetings` and accepts POST requests with simple JSON payloads.
-1. A client then wants to invoke it via SOAP and sends a message to `/soap-api` (where `RestRoutingFilter` is registered):
+1. A client then wants to invoke it via SOAP and sends a message to `/soap-api` (where `SoapProxyForRestApi` is registered):
 
   ```xml
-  <soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns="http://g.rimsa.lt/rest-over-soap/" >
+  <soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns="http://g.rimsa.lt/rest-via-soap/" >
     <soapenv:Header />
     <soapenv:Body>
       <request method="POST" path="/api/greetings">{ "content" : "Hello!" }</request>
     </soapenv:Body>
   </soapenv:Envelope>
   ```
-1. `RestRoutingFilter` then builds a POST request with `{ "content" : "Hello!" }` payload and forwards it to `/api/greetings`
+1. `SoapProxyForRestApi` then builds a POST request with `{ "content" : "Hello!" }` payload and forwards it to `/api/greetings`
 1. REST endpoint creates a Greeting instance and responds with `{ "id" : 123 }`
-1. `RestRoutingFilter` wraps it into the following SOAP response and sends it to the caller:
+1. `SoapProxyForRestApi` wraps it into the following SOAP response and sends it to the caller:
 
   ```xml
-  <SOAP-ENV:Envelope xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/" xmlns="http://g.rimsa.lt/rest-over-soap/">
+  <SOAP-ENV:Envelope xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/" xmlns="http://g.rimsa.lt/rest-via-soap/">
     <SOAP-ENV:Header/>
     <SOAP-ENV:Body>
       <response status="200">{ "id" : 123 }</response>
@@ -63,11 +63,11 @@ A Servlet Filter called `RestRoutingFilter` is provided that:
 
   ```xml
   <filter>
-    <filter-name>restRoutingFilter</filter-name>
-    <filter-class>com.github.grimsa.restviasoap.RestRoutingFilter</filter-class>
+    <filter-name>soapProxyForRestApi</filter-name>
+    <filter-class>com.github.grimsa.restviasoap.SoapProxyForRestApi</filter-class>
   </filter>
   <filter-mapping>
-    <filter-name>restRoutingFilter</filter-name>
+    <filter-name>soapProxyForRestApi</filter-name>
     <servlet-name>/soap-api</servlet-name>
   </filter-mapping>
   ```
